@@ -23,7 +23,6 @@ def parse_skill():
 def add_message():
   content = request.json
   r = content['text']
-  n = content['filename']
 
   bdata = base64.b64decode(r)
   with tempfile.TemporaryDirectory() as tmpdirname:
@@ -35,13 +34,10 @@ def add_message():
     with open(os.path.join(tmp_dir, 'file.pdf'), 'wb') as fp:
       fp.write(bdata)
 
-    parse_doc.main(tmp_dir = tmp_dir, filename = n)
+    parse_doc.main(tmp_dir = tmp_dir)
 
     with open(tmp_dir + '/allSkills.json', 'r') as fj:
       jsonfile = json.load(fj)
-
-    #os.remove(filename)
-    #os.remove(filename_json)
 
   return jsonify(jsonfile)
 

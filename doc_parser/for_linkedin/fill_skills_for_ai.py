@@ -129,10 +129,10 @@ def removeSpacesAndSymbols(text):
 
 def addSkillsRecord(experienceCount, fullText, jsonAI, cvIndex, excelSheet, rowInExcel):
   jsonAI["CVs"][cvIndex]["jobs"].append({})
-  jsonAI["CVs"][cvIndex]["jobs"][experienceCount]["skillsFromCV"] = fullText
-  jsonAI["CVs"][cvIndex]["jobs"][experienceCount]["skillsFromExcel"] = excelSheet.cell(
-    row=rowInExcel, column=23 + experienceCount * 5
-  ).value  # Skills'ai prasideda 23 stulpely ir kiekvieno darbo einam +5 stulpelyje
+  jsonAI["CVs"][cvIndex]["jobs"][experienceCount]["skill"] = fullText
+  #jsonAI["CVs"][cvIndex]["jobs"][experienceCount]["skillsFromExcel"] = excelSheet.cell(
+  #  row=rowInExcel, column=23 + experienceCount * 5
+  #).value  # Skills'ai prasideda 23 stulpely ir kiekvieno darbo einam +5 stulpelyje
   return experienceCount + 1
 
 
@@ -153,15 +153,15 @@ def addTextAndCheckSpaces(allText, textToAdd, wordBefore):
   return allText
 
 
-def getExcelSheetAndRow(cvFileName):
-  wb = openpyxl.load_workbook("/opt/cv_data/CV duomenys 2021.xlsx")
-  sheet = wb.active
-
-  for row in range(sheet.max_row - 1):
-    if cvFileName == sheet.cell(row=row + 1, column=1).value:
-      rowInExcel = row + 1
-
-  return sheet, rowInExcel
+#def getExcelSheetAndRow(cvFileName):
+#  wb = openpyxl.load_workbook("/opt/cv_data/CV duomenys 2021.xlsx")
+#  sheet = wb.active
+#
+#  for row in range(sheet.max_row - 1):
+#    if cvFileName == sheet.cell(row=row + 1, column=1).value:
+#      rowInExcel = row + 1
+#
+#  return sheet, rowInExcel
 
 
 def getSkillsJSON(tmp_dir, cvIndex):
@@ -175,13 +175,13 @@ def getSkillsJSON(tmp_dir, cvIndex):
   return skillsJSON
 
 
-def fillSkills(tmp_dir, cvFileName, cvIndex, multiplePositionsInfo):
+def fillSkills(tmp_dir, cvIndex, multiplePositionsInfo):
   skillsJSON = getSkillsJSON(tmp_dir, cvIndex)
-  excelSheet, rowInExcel = getExcelSheetAndRow(cvFileName)
+  #excelSheet, rowInExcel = getExcelSheetAndRow(cvFileName)
+  excelSheet, rowInExcel = 0, 0
 
   skillsJSON["CVs"].append({})
   skillsJSON["CVs"][cvIndex]["jobs"] = []
-  skillsJSON["CVs"][cvIndex]["FileName"] = cvFileName
 
   with open(tmp_dir + "/rightModified.json", "r") as dataFile:
     data = json.load(dataFile)
@@ -198,13 +198,13 @@ def fillSkills(tmp_dir, cvFileName, cvIndex, multiplePositionsInfo):
   if "experienceEndBlock" not in locals():
     # Suveiks, jei CV nebus education dalies. Tuomet imam visus blokus iki paskutinio
     experienceEndBlock = len(data["pages"][0]["blocks"]) - 1
-  if "experienceStartBlock" in locals() and "rowInExcel" in locals():
-    allWords = getAllWordsFromBlocks(experienceStartBlock, experienceEndBlock, data)
-    analyseExperienceWords(allWords, skillsJSON, cvIndex, excelSheet, rowInExcel, multiplePositionsInfo)
+  #if "experienceStartBlock" in locals() and "rowInExcel" in locals():
+  allWords = getAllWordsFromBlocks(experienceStartBlock, experienceEndBlock, data)
+  analyseExperienceWords(allWords, skillsJSON, cvIndex, excelSheet, rowInExcel, multiplePositionsInfo)
     # print(jsonAI)
-    with open(tmp_dir + "/allSkills.json", "w") as dataFile:
+  with open(tmp_dir + "/allSkills.json", "w") as dataFile:
       json.dump(skillsJSON, dataFile)
-  else:
+  #else:
     # Suveiks, jei nebus experience dalies arba CV nebus excel faile (dalis pav. būna suvesti su klaidomis)
-    print("PRALEISTAS: ", cvFileName)
+  #  print("PRALEISTAS: ", cvFileName)
 

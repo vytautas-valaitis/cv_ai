@@ -9,7 +9,7 @@ from doc_parser.for_linkedin.vision_json_to_general_json import createGeneralJSO
 from doc_parser.for_linkedin.fill_skills_for_ai import fillSkills
 from doc_parser.combine_cv_images import combineImages
 
-def main(tmp_dir, filename):
+def main(tmp_dir):
   load_dotenv()
   if "ID" in os.environ and "TOKEN" in os.environ:
     token = os.getenv("TOKEN")
@@ -29,7 +29,7 @@ def main(tmp_dir, filename):
     modifiedCombinedJsonPath = modifyJSON(combinedImgPathList)
     processInfo, multiplePositionsInfo = createGeneralJSON(tmp_dir, modifiedCombinedJsonPath, cvFileName)
     print(processInfo)
-    fillSkills(tmp_dir, filename, cvIndex, multiplePositionsInfo)
+    fillSkills(tmp_dir, cvIndex, multiplePositionsInfo)
     #fillSkills(tmp_dir, cvFileName, cvIndex, multiplePositionsInfo)
     deleteFiles(imgPathList)
     deleteFiles(cropedImgPathList)
