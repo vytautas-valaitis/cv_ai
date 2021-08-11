@@ -17,7 +17,16 @@ def parse_skill():
   r = content['text']
   r = {'text': [r, r, r], 'skill': [None, None, None]}
   results = fit_skill.fit(r)
-  return jsonify(results)
+  
+  res = '{'
+  for i in results:
+    res = res + '{\"skill\":\"' + i[0] + '\", '
+    a = str(round(i[1], 2))
+    res = res +'\"score\":' + a + '}, '
+  res = res[:1-3]
+  res = res + '}'
+
+  return jsonify(res)
 
 @app.route('/api/parse_doc', methods=['GET', 'POST'])
 def add_message():
