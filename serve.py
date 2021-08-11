@@ -18,7 +18,7 @@ def parse_skill():
   r = {'text': [r, r, r], 'skill': [None, None, None]}
   results = fit_skill.fit(r)
   return jsonify(results)
-  
+
 @app.route('/api/parse_doc', methods=['GET', 'POST'])
 def add_message():
   content = request.json
@@ -27,7 +27,7 @@ def add_message():
   bdata = base64.b64decode(r)
   with tempfile.TemporaryDirectory() as tmpdirname:
     tmp_dir = tmpdirname
-  
+
     filename = tmp_dir + '/file.pdf'
     filename_json = tmp_dir + '/file.json'
 
@@ -37,9 +37,16 @@ def add_message():
     parse_doc.main(tmp_dir = tmp_dir)
 
     with open(tmp_dir + '/allSkills.json', 'r') as fj:
-      jsonfile = json.load(fj)
+      skills_json = json.load(fj)
 
-  return jsonify(jsonfile)
+    with open(tmp_dir + '/file.json', 'r') as fj:
+      cv_json = json.load(fj)
+
+
+    res = cv_json
+    res.update(skills_json['CVs'][0])
+
+  return jsonify(res)
 
 if __name__ == '__main__':
   app.run()
