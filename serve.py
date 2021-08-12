@@ -18,13 +18,14 @@ def parse_skill():
   r = {'text': [r, r, r], 'skill': [None, None, None]}
   results = fit_skill.fit(r)
   
-  res = '{'
+  res = {}
+  res["skills"] = []
+
+  d = {}
   for i in results:
-    res = res + '{\"skill\":\"' + i[0] + '\", '
-    a = str(round(i[1], 2))
-    res = res +'\"score\":' + a + '}, '
-  res = res[:1-3]
-  res = res + '}'
+    a = round(i[1], 2)
+    d = {"skill":i[0], "score":a}
+    res["skills"].append(d)
 
   return jsonify(res)
 
